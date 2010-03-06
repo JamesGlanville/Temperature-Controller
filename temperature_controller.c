@@ -137,32 +137,50 @@ void loop() {
     bleh();
     Serial.print(1, BYTE);
     bleh();
-    slowprint("Temp: ");
+    //slowprint("Temp: ");
     int tempnum = read_temp(TC_0,1,TC_0_calib,10);
     int bedtemp = read_temp(TC_1,1,TC_1_calib,10);
+    char isHeating;
     char tempstring[17];
 //    Input=tempnum/10;
 //    myPID.Compute();
 //    analogWrite(HEATER,Output);
-	
-    sprintf(tempstring, "Ext:%d/%d %c",tempnum/10,eeprom_read_byte(0));
+
+
+
+	if (read_temp(TC_0,1,TC_0_calib,10) / 10 < eeprom_read_byte(0)) {
+		digitalWrite(HEATER,HIGH);
+		isHeating = "+"; }
+  else {
+		digitalWrite(HEATER,LOW);
+		isHeating = "-" ; }	
+    sprintf(tempstring, "Ext:%d/%d %c",tempnum/10,eeprom_read_byte(0),isHeating);
     slowprint(tempstring);
+    
     Serial.print(254, BYTE);
     bleh();
     Serial.print(192, BYTE);
     bleh();
+    
+	if (read_temp(TC_1,1,TC_0_calib,10) / 10 < eeprom_read_byte(0)) {
+		digitalWrite(BEDOUTPUT,HIGH);
+		isHeating = "+"; }
+  else {
+		digitalWrite(BEDOUTPUT,LOW);
+		isHeating = "-" ; }	
+    sprintf(tempstring, "Bed:%d/%d %c",tempnum/10,eeprom_read_byte(0),isHeating);
+    slowprint(tempstring);
+    
+    
+    
+    
+
 	if (digitalRead(INC)==HIGH) {
 		eeprom_write_byte(0,eeprom_read_byte(0)+1); }
 	if (digitalRead(DEC)==HIGH) {
 		eeprom_write_byte(0,eeprom_read_byte(0)-1); }
   
-  if (read_temp(TC_0,1,TC_0_calib,10) / 10 < eeprom_read_byte(0)) {
 
-	  digitalWrite(HEATER,HIGH);
-	  slowprint("HEATING"); }
-  else {
-	  digitalWrite(HEATER,LOW);
-	  slowprint("COOLING"); }
   delay(300);
 }
 
