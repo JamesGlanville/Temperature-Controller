@@ -4,13 +4,16 @@
 #define DEC 9 // Pull high to increment desiredtemp
 #define HEATER 8 // Connected to some kind of MOSFET/relay HIGH=hot
 
-#define TC_0 11  // CS Pin of MAX6607
+#define TC_0 11  // CS Pin of Extruder thermocouple
+#define TC_1 7   // CS Pin of heated bed thermocouple
+
 #include <string.h>
 #include <avr/eeprom.h>
 //#include "PID_Beta6.h"
 extern "C" void  __cxa_pure_virtual() {}
 
 int TC_0_calib = 0;  // Calibration compensation value in digital counts (.25?C)
+int TC_1_calib = 0;  // Calibration compensation value in digital counts (.25?C)
 unsigned int read_temp(int pin, int type, int error, int samples);
 //double Setpoint, Input, Output;
 //PID myPID(&Input, &Output, &Setpoint,2,5,1);
@@ -27,6 +30,9 @@ void setup() {
 
  pinMode(TC_0, OUTPUT);
  digitalWrite(TC_0,HIGH);  // Disable device
+ 
+ pinMode(TC_1, OUTPUT);
+ digitalWrite(TC_1,HIGH);  // Disable device
 
  Serial.begin(2400);
  //Input = read_temp(TC_0,1,TC_0_calib,10)/10;
