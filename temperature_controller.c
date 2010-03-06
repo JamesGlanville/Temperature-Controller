@@ -129,7 +129,7 @@ void slowprint(char string[]) {
         
 
 void loop() {
-    Serial.print(254, BYTE);
+    Serial.print(254, BYTE); //Clears display and goes to (1,1)
     bleh();
     Serial.print(128, BYTE);
     bleh();
