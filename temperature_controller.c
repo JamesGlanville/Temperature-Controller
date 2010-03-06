@@ -2,7 +2,10 @@
 #define SCK 13   // Serial Clock
 #define INC 10 // Pull high to increment desiredtemp
 #define DEC 9 // Pull high to increment desiredtemp
+#define INCBED // Pull high to make bed more heatful
+#define DECBED // Have a wild guess as to what this does.
 #define HEATER 8 // Connected to some kind of MOSFET/relay HIGH=hot
+#define BEDOUTPUT 6 // Heated bed MOSFET
 
 #define TC_0 11  // CS Pin of Extruder thermocouple
 #define TC_1 7   // CS Pin of heated bed thermocouple
@@ -134,23 +137,16 @@ void loop() {
     bleh();
     Serial.print(1, BYTE);
     bleh();
-    int desiredtemp = 50;
     slowprint("Temp: ");
     int tempnum = read_temp(TC_0,1,TC_0_calib,10);
-    char tempstring[7];
+    int bedtemp = read_temp(TC_1,1,TC_1_calib,10);
+    char tempstring[17];
 //    Input=tempnum/10;
 //    myPID.Compute();
 //    analogWrite(HEATER,Output);
-
-    sprintf(tempstring, "%d/%d",tempnum,eeprom_read_byte(0));
+	
+    sprintf(tempstring, "Ext:%d/%d %c",tempnum/10,eeprom_read_byte(0));
     slowprint(tempstring);
-    //slowprint("/");
-//    slowprint(desiredtemp);
-  // Read the temperature and print it to serial
-//  Serial.print("Temp F: ");
-//  Serial.print(read_temp(TC_0,0,TC_0_calib,10));  
-//  Serial.print("\tTemp C: ");
-//  Serial.println(read_temp(TC_0,1,TC_0_calib,10));
     Serial.print(254, BYTE);
     bleh();
     Serial.print(192, BYTE);
