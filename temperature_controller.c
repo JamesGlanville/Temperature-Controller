@@ -2,13 +2,15 @@
 #define SCK 13   // Serial Clock
 #define INC 10 // Pull high to increment desiredtemp
 #define DEC 9 // Pull high to increment desiredtemp
-#define INCBED // Pull high to make bed more heatful
-#define DECBED // Have a wild guess as to what this does.
+#define INCBED 5 // Pull high to make bed more heatful
+#define DECBED 4 // Have a wild guess as to what this does.
 #define HEATER 8 // Connected to some kind of MOSFET/relay HIGH=hot
 #define BEDOUTPUT 6 // Heated bed MOSFET
 
 #define TC_0 11  // CS Pin of Extruder thermocouple
 #define TC_1 7   // CS Pin of heated bed thermocouple
+#define EEPROMBED 1
+
 
 #include <string.h>
 #include <avr/eeprom.h>
@@ -148,12 +150,12 @@ void loop() {
 
 
 
-	if (read_temp(TC_0,1,TC_0_calib,10) / 10 < eeprom_read_byte(0)) {
+	if (tempnum / 10 < eeprom_read_byte(0)) {
 		digitalWrite(HEATER,HIGH);
-		isHeating = "+"; }
+		isHeating = '+'; }
   else {
 		digitalWrite(HEATER,LOW);
-		isHeating = "-" ; }	
+		isHeating = '-' ; }	
     sprintf(tempstring, "Ext:%d/%d %c",tempnum/10,eeprom_read_byte(0),isHeating);
     slowprint(tempstring);
     
@@ -162,25 +164,27 @@ void loop() {
     Serial.print(192, BYTE);
     bleh();
     
-	if (bedtemp / 10 < eeprom_read_byte(1)) {
+	if (bedtemp / 10 < eeprom_read_byte((uint8_t*)1)) {
 		digitalWrite(BEDOUTPUT,HIGH);
-		isHeating = "+"; }
+		isHeating = '+'; }
   else {
 		digitalWrite(BEDOUTPUT,LOW);
-		isHeating = "-" ; }	
-    sprintf(tempstring, "Bed:%d/%d %c",bedtemp/10,eeprom_read_byte(1),isHeating);
+		isHeating = '-' ; }
+		
+    sprintf(tempstring, "Bed:%d/%d %c",bedtemp/10,eeprom_read_byte((uint8_t*)1),isHeating);
     slowprint(tempstring);
     
+	if (digitalRead(INC)==HIGH) {
+		eeprom_write_byte(0,eeprom_read_byte((uint8_t*)0)+1); }
+	if (digitalRead(DEC)==HIGH) {
+		eeprom_write_byte(0,eeprom_read_byte((uint8_t*)0)-1); }
     
 	if (digitalRead(INCBED)==HIGH) {
-		eeprom_write_byte(1,eeprom_read_byte(1)+1); }
+		eeprom_write_byte((uint8_t*)1,eeprom_read_byte((uint8_t*)1)+1); }
 	if (digitalRead(DECBED)==HIGH) {
-		eeprom_write_byte(1,eeprom_read_byte(1)-1); }
+		eeprom_write_byte((uint8_t*)1,eeprom_read_byte((uint8_t*)1)-1); }
 
-	if (digitalRead(INC)==HIGH) {
-		eeprom_write_byte(0,eeprom_read_byte(0)+1); }
-	if (digitalRead(DEC)==HIGH) {
-		eeprom_write_byte(0,eeprom_read_byte(0)-1); }
+
   
 
   delay(300);
