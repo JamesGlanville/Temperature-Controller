@@ -163,18 +163,20 @@ void loop() {
     Serial.print(192, BYTE);
     bleh();
     
-	if (read_temp(TC_1,1,TC_0_calib,10) / 10 < eeprom_read_byte(0)) {
+	if (bedtemp / 10 < eeprom_read_byte(1)) {
 		digitalWrite(BEDOUTPUT,HIGH);
 		isHeating = "+"; }
   else {
 		digitalWrite(BEDOUTPUT,LOW);
 		isHeating = "-" ; }	
-    sprintf(tempstring, "Bed:%d/%d %c",tempnum/10,eeprom_read_byte(0),isHeating);
+    sprintf(tempstring, "Bed:%d/%d %c",bedtemp/10,eeprom_read_byte(1),isHeating);
     slowprint(tempstring);
     
     
-    
-    
+	if (digitalRead(INCBED)==HIGH) {
+		eeprom_write_byte(1,eeprom_read_byte(1)+1); }
+	if (digitalRead(DECBED)==HIGH) {
+		eeprom_write_byte(1,eeprom_read_byte(1)-1); }
 
 	if (digitalRead(INC)==HIGH) {
 		eeprom_write_byte(0,eeprom_read_byte(0)+1); }
