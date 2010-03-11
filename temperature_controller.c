@@ -131,10 +131,10 @@ void slowprint(char string[]) {
         
 
 void loop() {
-    Serial.print(254, BYTE); //Clears display and goes to (1,1)
-    bleh();
-    Serial.print(128, BYTE);
-    bleh();
+//    Serial.print(254, BYTE); //Clears display and goes to (1,1)
+//    bleh();
+//    Serial.print(128, BYTE);
+//    bleh();
     Serial.print(254, BYTE);
     bleh();
     Serial.print(1, BYTE);
@@ -171,7 +171,7 @@ void loop() {
 		digitalWrite(BEDOUTPUT,LOW);
 		isHeating = '-' ; }
 		
-    sprintf(tempstring, "Bed:%d/%d %c",bedtemp/10,eeprom_read_byte((uint8_t*)1),isHeating);
+    sprintf(tempstring, "Bed:%d/%d %c  ",bedtemp/10,eeprom_read_byte((uint8_t*)1),isHeating);
     slowprint(tempstring);
     
 	if (digitalRead(INC)==HIGH) {

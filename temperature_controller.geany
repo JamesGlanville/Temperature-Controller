@@ -14,5 +14,6 @@ description=
 run_cmd=
 
 [files]
-current_page=0
+current_page=1
 FILE_NAME_0=0;Make;0;16;1;1;0;/home/james/projects/temperature_controller/Makefile;0
+FILE_NAME_1=4127;C;0;16;1;1;0;/home/james/projects/temperature_controller/temperature_controller.c;0
